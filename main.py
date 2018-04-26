@@ -8,6 +8,10 @@ upper_red1 = np.array([0,0,0])
 lower_red2 = np.array([170, 170, 100])
 upper_red2 = np.array([180, 255, 255])
 
+minred = np.array([255,255,255])
+maxred = np.array([0,0,0])
+
+
 global hsv
 
 cap = cv2.VideoCapture(0)
@@ -16,7 +20,10 @@ def onclick(event, x, y, flags, param):
     if event == cv2.EVENT_LBUTTONDOWN : 
         global hsv
         pixel = hsv[y,x]
-        print("{} {}".format((x, y), pixel))
+        print(pixel)
+        for i, c in enumerate(pixel) :
+            if c > maxred[i] : maxred[i] = c
+            if c < minred[i] : minred[i] = c
 
 cv2.namedWindow('frame')
 cv2.setMouseCallback('frame', onclick)
@@ -28,7 +35,7 @@ while True:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
-    mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+    mask2 = cv2.inRange(hsv, minred, maxred)
 
     mask = cv2.bitwise_or(mask1, mask2)
 
