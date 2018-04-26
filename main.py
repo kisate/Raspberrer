@@ -28,7 +28,7 @@ def onclick(event, x, y, flags, param):
 cv2.namedWindow('frame')
 cv2.setMouseCallback('frame', onclick)
 
-
+centers = []
 
 while True:
     _, frame = cap.read()
@@ -51,6 +51,13 @@ while True:
     if len(x) > 0 :
         mx = int(sum(x)/len(x))
         my = int(sum(y)/len(y))
+        if len(centers) < 2 :
+            centers.append((mx, my))
+        else :
+            mx = int((sum(int(first) for first, second in centers) + mx)/(len(centers)+1))
+            my = int((sum(int(second) for first, second in centers) + my)/(len(centers)+1))
+            centers.pop(0)
+            centers.append((mx, my))
         cv2.circle(frame, (my, mx), 4, 255, 3)
 
 
